@@ -239,7 +239,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * calls fetcher({forceRefreshToken: false}). The captured cachedToken short-
 	 * circuit returns JWT-for-A — bound to the now-deleted session.
 	 */
-	test("rotation A → B: fetcher({forceRefreshToken:false}) must return the new JWT, not the old one", async () => {
+	test("rotation A → B: cached fetcher returns new JWT", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -261,7 +261,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * and always mints fresh via authClient.convex.token(). If this regresses, the
 	 * fix went too far.
 	 */
-	test("forceRefreshToken=true always mints fresh, even on the buggy code path", async () => {
+	test("forceRefreshToken=true always mints fresh", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -282,7 +282,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 *
 	 * After logout, fetcher should not short-circuit to the pre-logout JWT.
 	 */
-	test("logout (sessionId A → undefined): cache cleared, no short-circuit to JWT-for-A", async () => {
+	test("logout (sessionId → null) clears cached JWT", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -300,7 +300,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * SSR-hydrated initialToken would get blown away. The fetcher must produce a
 	 * working token after a first sign-in without spurious cache thrash.
 	 */
-	test("cold-start sign-in (undefined → A): fetcher works, no spurious cache thrash", async () => {
+	test("cold-start sign-in: no spurious cache thrash", async () => {
 		const rig = makeRig(null);
 		mount(rig);
 
@@ -317,7 +317,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * fetcher({forceRefreshToken: false}) must short-circuit to the initialToken
 	 * without a network call. Verifies the fix doesn't break this path.
 	 */
-	test("SSR hydration: initialToken short-circuits the first fetcher call without hitting token()", async () => {
+	test("SSR hydration: initialToken short-circuits without fetch", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -332,7 +332,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * redirect followed by an immediate `updateSession()` to refresh stored data).
 	 * The cache must drop at each rotation, not just the first.
 	 */
-	test("rapid rotation A → B → C: each step drops the cache, no stale at any step", async () => {
+	test("rapid rotation A → B → C: cache drops at each step", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -355,7 +355,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * resolve to a JWT bound to either the old or new id. The fix clears
 	 * pendingTokenRef so the next call starts a new fetch keyed to the new session.
 	 */
-	test("rotation while a token() fetch is mid-flight: pending fetch dropped, new fetch keyed to B", async () => {
+	test("rotation while fetch in flight: pending dropped, fresh fetch", async () => {
 		const rig = makeRig("session-A", { holdToken: true });
 		mount(rig);
 
@@ -381,7 +381,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * cache is still stale when the child reads it. The fix must run cleanup as part
 	 * of the fetcher's synchronous prelude, not in an effect.
 	 */
-	test("setAuth-style call on rotation: child effect reads the new JWT, not the stale captured one", async () => {
+	test("setAuth-style call on rotation: child effect reads the new JWT", async () => {
 		const rig = makeRig("session-A");
 		mount(rig, "JWT-for-session-A");
 
@@ -420,7 +420,7 @@ describe("convex-better-auth · React provider · session-rotation cache invalid
 	 * writing. After rotation or a newer fetch replaces the ref, the stale
 	 * `.then` bails out.
 	 */
-	test("late-resolving stale token() must not overwrite the fresh cached JWT", async () => {
+	test("late-resolving stale token() must not overwrite fresh cache", async () => {
 		const rig = makeRig("session-A", { holdToken: true });
 		mount(rig);
 
