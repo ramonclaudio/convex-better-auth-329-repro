@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+*.log
+.env*
+.idea
+.vscode
+.vitest-cache
+coverage
+dist

@@ -1,0 +1,28 @@
+{
+	"name": "convex-better-auth-329-repro",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"test:bug": "bash scripts/run.sh pristine",
+		"test:329": "bash scripts/run.sh 329",
+		"test:ref-fix": "bash scripts/run.sh ref-fix",
+		"test:ref-fix-render": "bash scripts/run.sh ref-fix-render"
+	},
+	"dependencies": {
+		"@convex-dev/better-auth": "0.12.2",
+		"better-auth": "1.6.11",
+		"convex": "1.30.0",
+		"react": "19.0.0",
+		"react-dom": "19.0.0"
+	},
+	"devDependencies": {
+		"@testing-library/react": "16.1.0",
+		"@types/react": "19.0.0",
+		"@types/react-dom": "19.0.0",
+		"@vitejs/plugin-react": "4.7.0",
+		"happy-dom": "16.0.0",
+		"typescript": "5.9.3",
+		"vitest": "2.1.8"
+	}
+}
