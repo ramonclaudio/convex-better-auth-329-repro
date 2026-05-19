@@ -5,9 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"test:bug": "bash scripts/run.sh pristine",
-		"test:329": "bash scripts/run.sh 329",
-		"test:ref-fix": "bash scripts/run.sh ref-fix",
-		"test:ref-fix-render": "bash scripts/run.sh ref-fix-render"
+		"test:fix": "bash scripts/run.sh fix"
 	},
 	"dependencies": {
 		"@convex-dev/better-auth": "0.12.2",
