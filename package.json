@@ -10,17 +10,17 @@
 	"dependencies": {
 		"@convex-dev/better-auth": "0.12.2",
 		"better-auth": "1.6.11",
-		"convex": "1.30.0",
-		"react": "19.0.0",
-		"react-dom": "19.0.0"
+		"convex": "^1.39.1",
+		"react": "^19.2.6",
+		"react-dom": "^19.2.6"
 	},
 	"devDependencies": {
-		"@testing-library/react": "16.1.0",
-		"@types/react": "19.0.0",
-		"@types/react-dom": "19.0.0",
-		"@vitejs/plugin-react": "4.7.0",
-		"happy-dom": "16.0.0",
-		"typescript": "5.9.3",
-		"vitest": "2.1.8"
+		"@testing-library/react": "^16.3.2",
+		"@types/react": "^19.2.15",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^6.0.2",
+		"happy-dom": "^20.9.0",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.7"
 	}
 }
