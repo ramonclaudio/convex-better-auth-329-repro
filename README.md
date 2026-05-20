@@ -1,6 +1,8 @@
-# convex-better-auth #329 repro
+# convex-better-auth-329-repro
 
-Hit a bug where Convex queries threw `Invalid session ID` every time a Better Auth session rotated (`changePassword({ revokeOtherSessions: true })`, cross-domain handoff, custom plugin endpoints). The provider's `fetchAccessToken` was holding onto the JWT bound to the deleted session. Filed [`get-convex/better-auth#329`](https://github.com/get-convex/better-auth/pull/329) to fix it. This repo is the minimal repro so maintainers and reviewers don't have to spend time recreating one to validate the PR.
+Convex queries throw `Invalid session ID` whenever a Better Auth session rotates (`changePassword({ revokeOtherSessions: true })`, cross-domain handoff, custom plugin endpoints that call `setSessionCookie`). The provider's `fetchAccessToken` holds onto the JWT bound to the deleted session. Filed [`get-convex/better-auth#329`](https://github.com/get-convex/better-auth/pull/329) to fix the React-layer state machine.
+
+This repo is the vitest suite. Proves the React-layer fix works in isolation by mocking `convex/react` and driving the fetcher through session-id rotations directly.
 
 ## Run
 
@@ -8,15 +10,15 @@ You need Bun. Node + npm works if you swap the commands.
 
 ```bash
 bun install
-bun run test:bug     # released 0.12.2
-bun run test:fix     # patched
+bun run test:bug    # released 0.12.2 (vanilla)
+bun run test:fix    # patched (PR #329)
 ```
 
-Each script swaps a build of `node_modules/@convex-dev/better-auth/dist/react/index.js` into place and runs the same vitest suite. The two variants live in `patches/`.
+Each script swaps `node_modules/@convex-dev/better-auth/dist/react/index.js` and runs the same vitest suite. The two variants live in `patches/`.
 
-## Results
+## What you'll see
 
-| Test | pristine | patched |
+| Test | vanilla | patched |
 |---|---|---|
 | rotation A → B: cached fetcher returns new JWT | FAIL | PASS |
 | forceRefreshToken=true always mints fresh | pass | pass |
@@ -30,6 +32,17 @@ Each script swaps a build of `node_modules/@convex-dev/better-auth/dist/react/in
 | **Total** | **3 / 9** | **9 / 9** |
 
 The mocked `convex/react` includes a child component that calls `fetcher({forceRefreshToken: false})` from `useEffect([fetcher])`, mirroring Convex's real `ConvexAuthStateFirstEffect`. That's the path the bug fires on.
+
+## Related
+
+- [Unit tests](https://github.com/ramonclaudio/convex-better-auth-329-repro) (this repo, vitest + mocked React)
+- [Expo](https://github.com/ramonclaudio/convex-better-auth-329-expo-repro) (real iOS + Convex + Better Auth)
+- [TanStack](https://github.com/ramonclaudio/convex-better-auth-329-tanstack-repro) (real browser + Convex + Better Auth)
+
+Upstream PRs and issues:
+- [get-convex/better-auth#329](https://github.com/get-convex/better-auth/pull/329): this PR (React-layer cache fix)
+- [convex-js#82](https://github.com/get-convex/convex-js/issues/82): upstream Convex issue (setAuth behavior)
+- [better-auth/better-auth#9345](https://github.com/better-auth/better-auth/pull/9345): upstream Better Auth complement (preserve caller's session on change-password)
 
 ## License
 
