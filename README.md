@@ -6,12 +6,12 @@ This repo is the vitest suite. Proves the React-layer fix works in isolation by 
 
 ## Run
 
-You need Bun. Node + npm works if you swap the commands.
+You need Node 22+.
 
 ```bash
-bun install
-bun run test:bug    # released 0.12.2 (vanilla)
-bun run test:fix    # patched (PR #329)
+npm install
+npm run test:bug    # released 0.12.2 (vanilla)
+npm run test:fix    # patched (PR #329)
 ```
 
 Each script swaps `node_modules/@convex-dev/better-auth/dist/react/index.js` and runs the same vitest suite. The two variants live in `patches/`.
